@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative">
+    <h1>{{ document.title }}</h1>
+    <p>Document View</p>
+    <h3 class="h2">Welcome, {{ request.user.first_name }}</h3> 
+  </div>
+</div>
+
+<div class="container py-5">
+
+  <!-- Back Button -->
+<div class="mb-4">
+    {% if document.subcategory and document.subcategory.slug %}
+      <a href="{% url 'documents:subcategory_detail' document.subcategory.slug %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Back to Subcategory
+      </a>
+    {% elif document.category and document.category.slug %}
+      <a href="{% url 'documents:category_detail' document.category.slug %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Back to Category
+      </a>
+    {% else %}
+      <a href="{% url 'documents:document_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Back to Documents
+      </a>
+    {% endif %}
+  </div>
+  
+  <!-- Document Info Card -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">{{ document.title }}</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Category:</strong> {{ document.category.name }}</p>
+      {% if document.subcategory %}
+        <p><strong>Subcategory:</strong> {{ document.subcategory.name }}</p>
+      {% endif %}
+      <p><strong>Description:</strong></p>
+      <div class="border p-2 bg-light">
+        {{ document.description|safe }}
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+      <a href="{{ document.file.url }}" class="btn btn-success" download>
+        <i class="bi bi-download"></i> Download
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+

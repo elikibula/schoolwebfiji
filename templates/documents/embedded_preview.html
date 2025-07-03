@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% load static %}
+<!-- Page Header -->
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+    <div class="container position-relative">
+      <h1>{{ document.title }} Preview</h1>
+      <p>Your Document in the KPS DMS</p>
+      <h3 class="h2">Welcome, {{ request.user.first_name }}</h3> 
+    </div>
+  </div>
+
+<div class="container py-5">
+  <h2 class="mb-3">{{ document.title }}</h2>
+
+  <div class="ratio ratio-16x9 shadow-sm border">
+    <iframe 
+      src="https://docs.google.com/gview?url={{ file_url }}&embedded=true" 
+      frameborder="0">
+    </iframe>
+  </div>
+
+  <div class="mt-3">
+    <a href="{{ document.file.url }}" class="btn btn-success" download>
+      <i class="bi bi-download"></i> Download
+    </a>
+  </div>
+</div>
+{% endblock %}

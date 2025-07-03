@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="page-title dark-background d-flex align-items-center" style="height: 200px; background-image: url('{% static 'assets/img/kalabu/files.png' %}'); background-size: cover; background-position: center;">
+  <div class="container text-center position-relative">
+    <h1 class="text-white">Upload Document</h1>
+    <p class="text-light">
+      Use this form to securely upload your documents into the KPS DMS.
+    </p>
+  </div>
+</div>
+
+<!-- Upload Form Section -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="id_title" class="form-label">Document Title</label>
+              {{ form.title|add_class:"form-control" }}
+            </div>
+
+            <!-- File -->
+            <div class="mb-3">
+              <label for="id_file" class="form-label">Select File</label>
+              {{ form.file|add_class:"form-control" }}
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+              <label for="id_category" class="form-label">Category</label>
+              {{ form.category|add_class:"form-select" }}
+            </div>
+
+            <!-- Subcategories -->
+            <div class="mb-3">
+              <label class="form-label">Subcategories</label>
+              <div id="id_subcategory" class="form-check">
+                {{ form.subcategory }}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="id_description" class="form-label">Description</label>
+              {{ form.description }}
+            </div>
+
+            <!-- Groups -->
+            <div class="mb-3">
+              <label class="form-label">Visible To (Groups)</label>
+              {{ form.groups }}
+            </div>
+
+            <!-- Submit -->
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">Upload Document</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifications -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast align-items-center text-white bg-success border-0 show mb-2" role="alert">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+
+<!-- AJAX for Subcategory Loading -->
+<script>
+document.getElementById('id_category').addEventListener('change', function () {
+  const categoryId = this.value;
+  fetch(`/documents/get-subcategories/?category_id=${categoryId}`)
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('id_subcategory');
+      container.innerHTML = '';
+      data.subcategories.forEach(subcat => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'subcategory';
+        checkbox.value = subcat.id;
+        checkbox.id = `subcat_${subcat.id}`;
+        checkbox.className = 'form-check-input me-2';
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.className = 'form-check-label';
+        label.innerText = subcat.name;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-check';
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(label);
+
+        container.appendChild(wrapper);
+      });
+    });
+});
+
+  // Bootstrap Toast Init
+  document.querySelectorAll('.toast').forEach(function (toastEl) {
+    new bootstrap.Toast(toastEl).show();
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative">
+    <h1>{{ subcategory.name }} Subcategory</h1>
+    <p>Documents available under this subcategory</p>
+    <h3 class="h2">Welcome, {{ request.user.first_name }}</h3> 
+  </div>
+</div>
+
+<div class="container-fluid py-5">
+  <div class="row">
+
+    <!-- Sidebar Navigation -->
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-folder"></i> Categories</span>
+          <button class="btn btn-sm btn-light d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarContent">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+        <div class="collapse d-md-block" id="sidebarContent">
+          <div class="p-3">
+            <ul class="list-group" id="categoryList">
+              {% for cat in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center 
+                    {% if cat == subcategory.category %}bg-primary text-white{% endif %}">
+                  <a href="{% url 'documents:category_detail' cat.pk %}"
+                     class="text-decoration-none {% if cat == subcategory.category %}text-white{% else %}text-dark{% endif %}">
+                    <i class="bi bi-folder me-2"></i>{{ cat.name }}
+                  </a>
+                  {% if cat.subcategories.all %}
+                    <button class="btn btn-sm btn-link p-0 ms-auto toggle-sub" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#sub-{{ cat.pk }}"
+                            aria-expanded="{% if cat == subcategory.category %}true{% else %}false{% endif %}">
+                      <i class="bi bi-caret-down-fill {% if cat == subcategory.category %}text-white{% endif %}"></i>
+                    </button>
+                  {% endif %}
+                </li>
+                {% for sub in cat.subcategories.all %}
+                  <li class="list-group-item ps-5 collapse {% if cat == subcategory.category %}show{% endif %}"
+                      id="sub-{{ cat.pk }}">
+                    <a href="{% url 'documents:subcategory_detail' sub.pk %}"
+                       class="text-decoration-none {% if sub == subcategory %}fw-bold text-primary{% else %}text-muted{% endif %}">
+                      <i class="bi bi-chevron-right me-2"></i>{{ sub.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <h2 class="mb-4">{{ subcategory.name }} Documents  
+        <a href="{% url 'documents:upload_document' %}" class="btn btn-primary">Upload Document</a>
+      </h2>
+      {% if documents %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Title</th>
+                <th>Uploaded By</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for doc in documents %}
+              <tr>
+                <td>{{ doc.title }}</td>
+                <td>{{ doc.author.get_full_name|default:doc.author.username }}</td>
+                <td>{{ doc.date_posted|date:"d M Y" }}</td>
+                <td>
+                  <a href="{% url 'documents:embedded_preview' doc.pk %}" class="btn btn-info" target="_blank">
+                    <i class="bi bi-eye"></i> View
+                  </a>
+                  <a href="{% url 'documents:update_document' doc.pk %}" class="btn btn-sm btn-warning me-1">
+                    <i class="bi bi-pencil-square"></i> Edit
+                  </a>
+
+                  <!-- Trigger delete modal -->
+                  <button type="button" class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{ doc.pk }}">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+
+                  <a href="{{ doc.file.url }}" class="btn btn-sm btn-success" download>
+                    <i class="bi bi-download"></i> Download
+                  </a>
+                </td>
+              </tr>
+              <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal{{ doc.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ doc.pk }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteModalLabel{{ doc.pk }}">
+                          <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Delete
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to <strong>permanently delete</strong> the document:
+                        <span class="text-danger fw-bold">“{{ doc.title }}”</span>?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="POST" action="{% url 'documents:delete_document' doc.pk %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p>No documents found in this subcategory.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS (if not already loaded) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

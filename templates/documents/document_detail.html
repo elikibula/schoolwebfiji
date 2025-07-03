@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/students.png' %}');">
+  <div class="container position-relative">
+    <h1>Document Management System</h1>
+    <p>The Kalabu Primary School DMS</p>
+  </div>
+</div>
+
+<div class="container py-4">
+  <h2>{{ document.title }}</h2>
+
+  <p class="text-muted">
+    Posted by {{ document.author.get_full_name|default:document.author.username }} on 
+    {{ document.date_posted|date:"M d, Y" }}
+  </p>
+
+  <p><strong>Category:</strong> {{ document.category.name }}</p>
+  <p><strong>Subcategories:</strong> {{ document.subcategory.all|join:", " }}</p>
+  <p><strong>Owner:</strong> {{ document.owner.get_full_name|default:document.owner.username }}</p>
+
+  <p>{{ document.description|linebreaks }}</p>
+
+  <a href="{{ document.file.url }}" class="btn btn-primary" download>Download File</a>
+</div>
+{% endblock %}

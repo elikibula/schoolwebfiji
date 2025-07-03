@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Header -->
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative text-white text-center">
+    <h1>Edit: {{ document.title }}</h1>
+    <p>Update your document in the Kalabu Primary School Document Management System</p>
+    <h3 class="h2">Welcome, {{ request.user.first_name }}</h3>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Edit Document Details</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% for field in form %}
+              <div class="mb-3">
+                <label class="form-label fw-semibold">{{ field.label_tag }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                  <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+
+            <div class="d-flex justify-content-between mt-4">
+              <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle"></i> Update
+              </button>
+              <a href="{% url 'documents:document_list' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Cancel
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

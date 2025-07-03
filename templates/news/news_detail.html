@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url({% static 'assets/img/kalabu/students.png' %});">
+  <div class="container position-relative">
+    <h2 class="mt-2">{{ news.title }}</h2>
+    <p>Read the full story and browse related news.</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'news:news_list' %}">News</a></li>
+        <li class="current">{{ news.title }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- Main Content -->
+<section class="section py-5">
+  <div class="container">
+    <div class="row gy-4">
+
+      <!-- LEFT: News Content -->
+      <div class="col-lg-8">
+        <article class="article">
+          <div class="article-image mb-4">
+            <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid rounded shadow">
+          </div>
+
+          <div class="article-content">
+            <span class="badge bg-primary">{{ news.category }}</span>
+            <h2 class="mt-2">{{ news.title }}</h2>
+            <div class="text-muted small">
+              <i class="bi bi-calendar-event"></i> {{ news.date_posted|naturaltime }}
+            </div>
+            <div class="content-section" id="news-content" data-aos="fade-up">
+              {{ news.content|linebreaks }}
+            </div>
+          </div>
+          <!--Facebook Share-->
+      <div class="share-article mt-4">
+        <h5>Share this news:</h5>
+        <div class="d-flex gap-2">
+          <!-- Facebook -->
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+             target="_blank" class="btn btn-sm btn-primary">
+            <i class="bi bi-facebook"></i> Facebook
+          </a> 
+          <!-- Email -->
+          <a href="mailto:?subject={{ news.title|urlencode }}&body={{ request.build_absolute_uri }}"
+            class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-envelope-fill"></i> Email
+          </a>     
+        </div>
+      </div>
+        </article>
+      </div>      
+      <!-- RIGHT: Sidebar -->
+      <div class="col-lg-4">
+        <!-- Recent News -->
+        <div class="mb-5">
+            <h5 class="mb-3">Recent News</h5>
+            
+            {% for item in recent_news %}
+            <div class="card mb-3 border-0 shadow-sm sidebar-card">
+                <div class="row g-0">
+                    {% if item.image %}
+                    <div class="col-4">
+                        <a href="{% url 'news:news_detail' item.slug %}">
+                            <img src="{{ item.image.url }}" class="img-fluid rounded-start h-100" alt="{{ item.title }}" style="object-fit: cover;">
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="col">
+                        <div class="card-body py-2 px-3">
+                            <h6 class="card-title mb-1">
+                                <a href="{% url 'news:news_detail' item.slug %}" class="text-decoration-none text-dark">
+                                    {{ item.title|truncatewords:5 }}
+                                </a>
+                            </h6>
+                            <p class="card-text mb-1 text-muted small">
+                                {{ item.content|striptags|truncatewords:7 }}
+                            </p>
+                            <p class="card-text mb-0">
+                                <small class="text-muted">{{ item.date_posted|naturaltime }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No recent news.</p>
+            {% endfor %}
+        </div>
+        
+        <!-- Categories -->
+        <div class="mb-4">
+            <h5 class="mb-3">Categories</h5>
+            <ul class="list-unstyled category-list">
+                {% for category in categories %}
+                <li>
+                    <a href="{% url 'news:category_view' category.slug %}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                        {{ category.name }}
+                        <span class="badge bg-primary rounded-pill">{{ category.news_set.count }}</span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="text-muted">No categories yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

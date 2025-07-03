@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative">
+    <h1>Kalabu Primary School Document Management System (KPS DMS)</h1>
+    <p>The KPS DMS is a centralized online platform for Kalabu Primary School, designed to store, organize, and manage all school documents in one secure, easily accessible location. With a single-page interface, it simplifies document retrieval for staff, ensuring efficiency and seamless record-keeping.</p>
+    <h3 class="h2">Welcome, {{ request.user.first_name }}</h3>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">KPS DMS Categories</h2>
+    <a href="{% url 'documents:upload_document' %}" class="btn btn-primary">Upload Document</a>
+  </div>
+
+  <div class="row">
+    {% for category in categories %}
+      <div class="col-md-4 mb-4">
+        <a href="{% url 'documents:category_detail' category.pk %}" class="text-decoration-none text-dark">
+          <div class="card shadow-sm h-100 text-white border-0"
+               style="background-image: url('{% static 'assets/img/kalabu/files1.png' %}'); background-size: cover; background-position: center;">
+               <div class="card-body text-center position-relative" style="background-color: rgba(0, 0, 0, 0.5);">
+                <h5 class="card-title text-white">{{ category.name }}</h5>
+                <p class="card-text text-white">
+                  {{ category.subcategory_count }} subcategory{{ category.subcategory_count|pluralize }}, 
+                  {{ category.document_count }} document{{ category.document_count|pluralize }}
+                </p>
+                <a href="{% url 'documents:category_detail' category.pk %}" class="stretched-link"></a>
+              </div>              
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <p>No categories found.</p>
+    {% endfor %}
+  </div>  
+</div>
+{% endblock %}

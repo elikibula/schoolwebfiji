@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Optional: TinyMCE form media loader -->
+{{ form.media }}
+
+<!-- Header -->
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative text-center text-white">
+    <h1>Create News Article</h1>
+    <p>You create News Articles here and attache images</p>
+    <h3 class="h2">Welcome, {{ request.user.first_name }}</h3>
+  </div>
+</div>
+
+<div class="container py-4">
+  <h2>Create News</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Publish</button>
+    <a href="{% url 'news:news_list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}
