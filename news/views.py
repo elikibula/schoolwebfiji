@@ -5,7 +5,7 @@ from .forms import NewsForm
 
 
 
-@login_required
+
 def news_list(request):
     # Main news list
     news_posts = News.objects.all().order_by('-date_posted')
@@ -23,7 +23,7 @@ def news_list(request):
     }
     return render(request, 'news/news.html', context)
 
-@login_required
+
 def news_detail(request, slug):
     # Get the main news item
     news = get_object_or_404(News, slug=slug)
@@ -73,7 +73,7 @@ def delete_news(request, pk):
         return redirect('news:news_list')
     return render(request, 'news/delete_news.html', {'news': news})
 
-@login_required
+
 def category_view(request, slug):
     category = get_object_or_404(Category, slug=slug)
     news_posts = News.objects.filter(category=category).order_by('-date_posted')

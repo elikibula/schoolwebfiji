@@ -184,32 +184,33 @@
         <div class="row gy-4">
             {% for news in featured_news %}
             <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
-            <article>
-                <div class="post-img">
-                {% if news.image %}
-                    <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid">
-                {% else %}
-                    <img src="{% static 'assets/img/default-news.jpg' %}" alt="No image" class="img-fluid">
-                {% endif %}
-                </div>
-    
-                <p class="post-category">{{ news.category.name }}</p>
-    
-                <h2 class="title">
-                <a href="{% url 'news:news_detail' news.slug %}">{{ news.title }}</a>
-                </h2>
-    
-                <div class="d-flex align-items-center">
-                <img src="{% static 'assets/img/person/default.png' %}" alt="" class="img-fluid post-author-img flex-shrink-0">
-                <div class="post-meta">
-                    <p class="post-author">{{ news.author.get_full_name|default:news.author.username }}</p>
-                    <p class="post-date">
-                    <time datetime="{{ news.date_posted|date:'Y-m-d' }}">{{ news.date_posted|date:"M d, Y" }}</time>
-                    </p>
-                </div>
-                </div>
-            </article>
+                <a href="{% url 'news:news_detail' news.slug %}" class="text-decoration-none text-dark d-block h-100">
+                    <article class="border rounded p-3 h-100 hover-shadow" style="cursor: pointer;">
+                    <div class="post-img">
+                        {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid">
+                        {% else %}
+                        <img src="{% static 'assets/img/default-news.jpg' %}" alt="No image" class="img-fluid">
+                        {% endif %}
+                    </div>
+
+                    <p class="post-category mt-2">{{ news.category.name }}</p>
+
+                    <h2 class="title h5">{{ news.title }}</h2>
+
+                    <div class="d-flex align-items-center mt-3">
+                        <img src="{% static 'assets/img/person/default.png' %}" alt="" class="img-fluid post-author-img flex-shrink-0" style="width: 40px; height: 40px; border-radius: 50%;">
+                        <div class="post-meta ms-2">
+                        <p class="post-author mb-0">{{ news.author.get_full_name|default:news.author.username }}</p>
+                        <p class="post-date mb-0">
+                            <time datetime="{{ news.date_posted|date:'Y-m-d' }}">{{ news.date_posted|date:"M d, Y" }}</time>
+                        </p>
+                        </div>
+                    </div>
+                    </article>
+                </a>
             </div>
+
             {% empty %}
             <p class="text-muted">No featured news available.</p>
             {% endfor %}
