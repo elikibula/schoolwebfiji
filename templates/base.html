@@ -38,8 +38,8 @@
 
       <a href="/" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.webp" alt=""> -->
-        <i class="bi bi-buildings"></i>
+        <!-- <img src="{% static 'assets/img/logo.png' %}" alt="School Logo" style="width: 50px; height: auto;">
+         <i class="bi bi-buildings"></i> -->
         <h1 class="sitename">Kalabu Primary School</h1>
       </a>
 
@@ -185,6 +185,14 @@
 
   <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <style>
+    .hover-shadow:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+  </style>
 
 </body>
 
