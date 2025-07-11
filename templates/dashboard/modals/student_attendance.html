@@ -1,0 +1,30 @@
+<div class="modal-header bg-secondary text-white">
+  <h5 class="modal-title">Attendance for {{ student.first_name }} {{ student.last_name }}</h5>
+  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  {% if attendances %}
+    <table class="table table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Date Recorded</th>
+          <th>Term</th>
+          <th>Year</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for attendance in attendances %}
+          <tr>
+            <td>{{ attendance.date_recorded|date:"M d, Y" }}</td>
+            <td>{{ attendance.term }}</td>
+            <td>{{ attendance.year }}</td>
+            <td>{{ attendance.attendance_note }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-info">No attendance records available.</div>
+  {% endif %}
+</div>

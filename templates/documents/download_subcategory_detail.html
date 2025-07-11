@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="page-title dark-background" style="background-image: url('{% static 'assets/img/kalabu/files.png' %}');">
+  <div class="container position-relative text-center text-white">
+    <h1>File Downloads</h1>
+    <p>Browse to download files</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <h2 class="mb-4 text-primary">{{ subcategory.name }}</h2>
+
+  {% if documents %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Date Posted</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doc in documents %}
+            <tr>
+              <td>{{ doc.title }}</td>
+              <td>{{ doc.description|default:"—" }}</td>
+              <td>{{ doc.date_posted|date:"F d, Y" }}</td>
+              <td>
+                <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary download-link" download>
+                <i class="bi bi-download"></i> Download
+                </a>
+
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted">No documents found in this subcategory.</p>
+  {% endif %}
+</div>
+
+<!-- Thank You Modal -->
+<div class="modal fade" id="downloadThankYouModal" tabindex="-1" aria-labelledby="downloadThankYouLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="downloadThankYouLabel">Download Successful</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Thank you for downloading the file!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const downloadLinks = document.querySelectorAll(".download-link");
+
+    downloadLinks.forEach(link => {
+      link.addEventListener("click", function () {
+        // Slight delay to allow download to begin
+        setTimeout(() => {
+          const modal = new bootstrap.Modal(document.getElementById('downloadThankYouModal'));
+          modal.show();
+        }, 500);
+      });
+    });
+  });
+</script>
+
+{% endblock %}

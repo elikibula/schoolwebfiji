@@ -1,0 +1,22 @@
+<div class="modal-header bg-danger text-white">
+  <h5 class="modal-title">Disciplinary Records for {{ student.first_name }} {{ student.last_name }}</h5>
+  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  {% if disciplinary %}
+    <ul class="list-group">
+      {% for record in disciplinary %}
+        <li class="list-group-item">
+          <strong>Date:</strong> {{ record.date|date:"M d, Y" }}<br>
+          <strong>Incident:</strong> {{ record.incident }}<br>
+          <strong>Status:</strong> {{ record.get_status_display }}<br>
+          {% if record.reported_by %}
+            <strong>Reported By:</strong> {{ record.reported_by }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-success">No disciplinary records found for this student.</div>
+  {% endif %}
+</div>

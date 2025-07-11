@@ -6,6 +6,8 @@ app_name = 'documents'
 urlpatterns = [
     path('', views.document_list, name='document_list'),
     path('upload/', views.upload_document, name='upload_document'),
+    path('downloads/', views.download_view, name='downloads'),
+    path('downloads/subcategory/<int:pk>/', views.download_subcategory_detail, name='download_subcategory_detail'),
 
     # Use primary key instead of slug
     path('category/<int:pk>/', views.category_detail, name='category_detail'),

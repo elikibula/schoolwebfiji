@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student Report</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 40px;
+            color: #333;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header-info div {
+            margin: 6px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #34495e;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-style: italic;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <img src="/static/assets/img/kalabu/logo.png" alt="School Logo">
+    <h1>Student Report</h1>
+
+    <div class="card header-info">
+        <div><strong>Student Name:</strong> {{ student.first_name }} {{ student.last_name }}</div>
+        <div><strong>Class:</strong> {{ class_group.name }}</div>
+        <div><strong>Term:</strong> {{ term }}</div>
+        <div><strong>Year:</strong> {{ year }}</div>
+        <div><strong>Class Teacher:</strong> {{ teacher.get_full_name }}</div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">Results</div>
+        {% if results %}
+        <table>
+            <thead>
+                <tr><th>Subject</th><th>Score</th><th>Grade</th></tr>
+            </thead>
+            <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.subject.name }}</td>
+                    <td>{{ result.score }}</td>
+                    <td>{{ result.grade }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No results available.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="section-title">Assessments</div>
+        {% if assessments %}
+        <table>
+            <thead>
+                <tr><th>Area</th><th>Category</th><th>Rating</th><th>Remark</th></tr>
+            </thead>
+            <tbody>
+            {% for assessment in assessments %}
+                <tr>
+                    <td>{{ assessment.area }}</td>
+                    <td>{{ assessment.get_category_display }}</td>
+                    <td>{{ assessment.get_rating_display }}</td>
+                    <td>{{ assessment.remark }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No assessments available.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="section-title">Disciplinary Records</div>
+        {% if disciplinary %}
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Incident</th><th>Status</th><th>Reported By</th></tr>
+            </thead>
+            <tbody>
+            {% for record in disciplinary %}
+                <tr>
+                    <td>{{ record.date|date:"M d, Y" }}</td>
+                    <td>{{ record.incident }}</td>
+                    <td>{{ record.get_status_display }}</td>
+                    <td>{{ record.reported_by }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No disciplinary records available.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="section-title">Attendance</div>
+        {% if attendance %}
+        <table>
+            <thead>
+                <tr><th>Date Recorded</th><th>Note</th><th>Term</th><th>Year</th></tr>
+            </thead>
+            <tbody>
+            {% for att in attendance %}
+                <tr>
+                    <td>{{ att.date_recorded|date:"M d, Y" }}</td>
+                    <td>{{ att.attendance_note }}</td>
+                    <td>{{ att.term }}</td>
+                    <td>{{ att.year }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No attendance records available.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

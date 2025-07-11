@@ -3,35 +3,147 @@
 {% load humanize %}
 
 {% block content %}
+<!-- Page Banner -->
 <div class="page-title dark-background" style="background-image: url({% static 'assets/img/kalabu/students.png' %});">
-    <div class="container position-relative">
-        <h1>News in {{ category.name }}</h1>
-        <nav class="breadcrumbs">
-            <ol>
-                <li><a href="{% url 'news:news_list' %}">Home</a></li>
-                <li><a href="{% url 'news:news_list' %}">News</a></li>
-                <li class="current">{{ category.name }}</li>
-            </ol>
-        </nav>
-    </div>
+  <div class="container position-relative">
+    <h1>News in {{ category.name }}</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'news:news_list' %}">Home</a></li>
+        <li><a href="{% url 'news:news_list' %}">News</a></li>
+        <li class="current">{{ category.name }}</li>
+      </ol>
+    </nav>
+  </div>
 </div>
 
+<!-- Category News + Sidebar -->
 <section class="section py-5">
-    <div class="container">
-        <div class="row gy-4">
-            <div class="col-lg-8">
-                {% for post in news_posts %}
-                    <!-- Your news card template here -->
-                {% empty %}
-                    <p>No news in this category yet.</p>
-                {% endfor %}
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- News Grid -->
+      <div class="col-lg-8">
+        <div class="row g-4">
+          {% for post in news_posts %}
+          <div class="col-md-6 col-lg-6">
+            <div class="card h-100 border-0 shadow-hover">
+              <div class="card-img-container">
+                <a href="{% url 'news:news_detail' post.slug %}">
+                  {% if post.image %}
+                  <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                  {% else %}
+                  <img src="{% static 'assets/img/default-news.jpg' %}" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;">
+                  {% endif %}
+                </a>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge bg-primary">{{ post.category.name }}</span>
+                  <small class="text-muted"><i class="bi bi-clock"></i> {{ post.date_posted|naturaltime }}</small>
+                </div>
+                <h5 class="card-title">
+                  <a href="{% url 'news:news_detail' post.slug %}" class="text-decoration-none stretched-link">{{ post.title }}</a>
+                </h5>
+                <p class="card-text text-muted mb-3">{{ post.content|striptags|truncatewords:20 }}</p>
+              </div>
             </div>
-            
-            <!-- Sidebar with recent news and categories -->
-            <div class="col-lg-4">
-                {% include 'news/partials/sidebar.html' %}
+          </div>
+          {% empty %}
+          <p class="text-muted">No news in this category yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Categories Sidebar -->
+            <div class="mb-5">
+                <h5 class="mb-3 fw-bold text-uppercase text-primary">News Categories</h5>
+                <ul class="list-group category-list">
+                {% for category in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 border-bottom">
+                    <a href="{% url 'news:category_view' category.slug %}"
+                    class="text-decoration-none text-dark w-100 d-flex justify-content-between align-items-center {% if category.slug == request.resolver_match.kwargs.slug %}fw-bold text-primary{% endif %}">
+                    <span>{{ category.name }}</span>
+                    <span class="badge bg-primary rounded-pill">{{ category.news_set.count }}</span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No categories yet.</li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Recent News -->
+            <div class="mb-5">
+                <h5 class="mb-3">Recent News</h5>
+                
+                {% for item in recent_news %}
+                <div class="card mb-3 border-0 shadow-sm sidebar-card">
+                    <div class="row g-0">
+                        {% if item.image %}
+                        <div class="col-4">
+                            <a href="{% url 'news:news_detail' item.slug %}">
+                                <img src="{{ item.image.url }}" class="img-fluid rounded-start h-100" alt="{{ item.title }}" style="object-fit: cover;">
+                            </a>
+                        </div>
+                        {% endif %}
+                        <div class="col">
+                            <div class="card-body py-2 px-3">
+                                <h6 class="card-title mb-1">
+                                    <a href="{% url 'news:news_detail' item.slug %}" class="text-decoration-none text-dark">
+                                        {{ item.title|truncatewords:5 }}
+                                    </a>
+                                </h6>
+                                <p class="card-text mb-1 text-muted small">
+                                    {{ item.content|striptags|truncatewords:7 }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    <small class="text-muted">{{ item.date_posted|naturaltime }}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No recent news.</p>
+                {% endfor %}
             </div>
         </div>
     </div>
+  </div>
 </section>
+
+<!-- Optional style -->
+<style>
+  .shadow-hover {
+    transition: all 0.3s ease;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+  }
+
+  .shadow-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  }
+
+  .card-img-container {
+    overflow: hidden;
+  }
+
+  .card-img-container img {
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover .card-img-container img {
+    transform: scale(1.05);
+  }
+
+  .stretched-link::after {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    content: "";
+    z-index: 1;
+  }
+</style>
 {% endblock %}

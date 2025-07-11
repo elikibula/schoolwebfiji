@@ -1,0 +1,14 @@
+<form id="disciplinary-form" method="post" action="{% url 'add_disciplinary' %}" novalidate>
+  {% csrf_token %}
+  {% load crispy_forms_tags %}
+  {{ disciplinary_form|crispy }}
+
+  <div class="modal-footer border-0 pt-3 d-flex justify-content-between align-items-center">
+    <button type="submit" class="btn btn-danger px-4 py-2 shadow-sm">
+      <i class="bi bi-check-circle me-2"></i> Save Record
+    </button>
+    <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
+      <i class="bi bi-x-circle me-2"></i> Cancel
+    </button>
+  </div>
+</form>

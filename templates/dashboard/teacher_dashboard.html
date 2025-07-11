@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url({% static 'assets/img/kalabu/students.png' %});">
+  <div class="container position-relative py-4">
+    <h2 class="text-white">Kalabu Primary School Admin Dashboard</h2>
+  </div>
+</div>
+
+<div class="container-fluid my-4">
+  <div class="row">
+    <div class="col-md-12">
+
+      <h3>Welcome, {{ request.user.get_full_name }}</h3>
+
+      {% if class_group %}
+        <h4>Your Class: {{ class_group.name }}</h4>
+
+        <!-- Student List Container (updated dynamically) -->
+        <div id="student-table-container">
+          {% include 'dashboard/includes/partial_student_list.html' %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="my-4 d-flex flex-wrap justify-content-center gap-2">
+
+            <button id="btn-add-student" type="button" class="btn btn-primary px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="bi bi-person-plus-fill"></i> Add Student
+            </button>
+
+            <button id="btn-add-result" type="button" class="btn btn-success px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#addResultModal">
+                <i class="bi bi-clipboard-data-fill"></i> Enter Results
+            </button>
+
+            <button id="btn-add-assessment" type="button" class="btn btn-warning text-white px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#addAssessmentModal">
+                <i class="bi bi-pencil-square"></i> Record Assessment
+            </button>
+
+            <button id="btn-add-disciplinary" type="button" class="btn btn-danger px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#addDisciplinaryModal">
+                <i class="bi bi-exclamation-triangle-fill"></i> Add Disciplinary
+            </button>
+
+            <button id="btn-add-attendance" type="button" class="btn btn-secondary px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#addAttendanceModal">
+                <i class="bi bi-calendar-check-fill"></i> Add Attendance
+            </button>
+
+        </div>
+
+      {% else %}
+        <p>You haven't been assigned a class yet.</p>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm border-0">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title" id="addStudentModalLabel">
+          <i class="bi bi-person-plus-fill me-2"></i> Add New Student
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="modal-content-container" class="px-2">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Enter Result Modal -->
+<div class="modal fade" id="addResultModal" tabindex="-1" aria-labelledby="addResultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm border-0">
+      <div class="modal-header bg-success text-white rounded-top-4">
+        <h5 class="modal-title" id="addResultModalLabel">
+          <i class="bi bi-journal-plus me-2"></i> Enter Student Result
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="modal-result-content-container" class="px-2">
+          <div class="text-center py-5">
+            <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Record Assessment Modal -->
+<div class="modal fade" id="addAssessmentModal" tabindex="-1" aria-labelledby="addAssessmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm border-0">
+      <div class="modal-header bg-warning text-white rounded-top-4">
+        <h5 class="modal-title" id="addAssessmentModalLabel">
+          <i class="bi bi-clipboard-check me-2"></i> Record Student Assessment
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="modal-assessment-content-container" class="px-2">
+          <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Disciplinary Modal -->
+<div class="modal fade" id="addDisciplinaryModal" tabindex="-1" aria-labelledby="addDisciplinaryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm border-0">
+      <div class="modal-header bg-danger text-white rounded-top-4">
+        <h5 class="modal-title" id="addDisciplinaryModalLabel">
+          <i class="bi bi-exclamation-triangle me-2"></i> Add Disciplinary Record
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="modal-disciplinary-content-container" class="px-2">
+          <div class="text-center py-5">
+            <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Attendance Modal -->
+<div class="modal fade" id="addAttendanceModal" tabindex="-1" aria-labelledby="addAttendanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" id="modal-attendance-content-container">
+      <!-- AJAX content will be loaded here -->
+    </div>
+  </div>
+</div>
+
+
+<!-- Generic Student Detail Modal (for Results, Assessments, Disciplinary, Attendance) -->
+<div class="modal fade" id="studentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm" id="studentModalContent">
+      <!-- AJAX-loaded content will go here -->
+    </div>
+  </div>
+</div>
+
+<!-- jQuery (required for AJAX) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(function () {
+
+  // Add Student modal load and submit
+  $('#btn-add-student').click(function () {
+    $.ajax({
+      url: "{% url 'add_student' %}",
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $('#modal-content-container').html('<div class="modal-body text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+      },
+      success: function (data) {
+        $('#modal-content-container').html(data.html_form);
+      }
+    });
+  });
+
+  $('#addStudentModal').on('submit', '#student-form', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      data: form.serialize(),
+      type: form.attr('method'),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $('#student-table-container').html(data.html_student_list);
+          $('#addStudentModal').modal('hide');
+        } else {
+          $('#modal-content-container').html(data.html_form);
+        }
+      }
+    });
+  });
+
+  // Add Result modal load and submit
+  $('#btn-add-result').click(function () {
+    $.ajax({
+      url: "{% url 'add_result' %}",
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $('#modal-result-content-container').html('<div class="modal-body text-center py-5"><div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+      },
+      success: function (data) {
+        $('#modal-result-content-container').html(data.html_form);
+      }
+    });
+  });
+
+  $('#addResultModal').on('submit', '#result-form', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      data: form.serialize(),
+      type: form.attr('method'),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $('#addResultModal').modal('hide');
+          // Optionally update result list or dashboard here
+        } else {
+          $('#modal-result-content-container').html(data.html_form);
+        }
+      }
+    });
+  });
+
+  // Add Assessment modal load and submit
+  $('#btn-add-assessment').click(function () {
+    $.ajax({
+      url: "{% url 'add_assessment' %}",
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $('#modal-assessment-content-container').html('<div class="text-center py-5"><div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+      },
+      success: function (data) {
+        $('#modal-assessment-content-container').html(data.html_form);
+      }
+    });
+  });
+
+  $('#addAssessmentModal').on('submit', '#assessment-form', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      data: form.serialize(),
+      type: form.attr('method'),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $('#addAssessmentModal').modal('hide');
+        } else {
+          $('#modal-assessment-content-container').html(data.html_form);
+        }
+      }
+    });
+  });
+
+  // Add Disciplinary modal load and submit
+  $('#btn-add-disciplinary').click(function () {
+    $.ajax({
+      url: "{% url 'add_disciplinary' %}",
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $('#modal-disciplinary-content-container').html('<div class="text-center py-5"><div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+        $('#addDisciplinaryModal').modal('show');
+      },
+      success: function (data) {
+        $('#modal-disciplinary-content-container').html(data.html_form);
+      }
+    });
+  });
+
+  $('#addDisciplinaryModal').on('submit', '#disciplinary-form', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      data: form.serialize(),
+      type: form.attr('method'),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $('#addDisciplinaryModal').modal('hide');
+        } else {
+          $('#modal-disciplinary-content-container').html(data.html_form);
+        }
+      }
+    });
+  });
+
+
+  // Generic function to load student detail modals (results, assessments, disciplinary, attendance)
+  function loadStudentModal(url) {
+    $('#studentModalContent').html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+    $('#studentModal').modal('show');
+
+    $.ajax({
+      url: url,
+      type: 'get',
+      success: function (data) {
+        $('#studentModalContent').html(data);
+      },
+      error: function () {
+        $('#studentModalContent').html('<div class="alert alert-danger">Failed to load data.</div>');
+      }
+    });
+  }
+
+  // Bind click events for student action buttons
+  $(document).on('click', '.view-results', function (e) {
+    e.preventDefault();
+    loadStudentModal($(this).attr('href'));
+  });
+
+  $(document).on('click', '.view-assessments', function (e) {
+    e.preventDefault();
+    loadStudentModal($(this).attr('href'));
+  });
+
+  $(document).on('click', '.view-disciplinary', function (e) {
+    e.preventDefault();
+    loadStudentModal($(this).attr('href'));
+  });
+
+  $(document).on('click', '.view-attendance', function (e) {
+    e.preventDefault();
+    loadStudentModal($(this).attr('href'));
+  });
+
+});
+
+// Add Attendance modal load and submit
+$('#btn-add-attendance').click(function () {
+  $.ajax({
+    url: "{% url 'add_attendance' %}",
+    type: 'get',
+    dataType: 'json',
+    beforeSend: function () {
+      $('#modal-attendance-content-container').html('<div class="modal-body text-center py-5"><div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+      $('#addAttendanceModal').modal('show');
+    },
+    success: function (data) {
+      $('#modal-attendance-content-container').html(data.html_form);
+    }
+  });
+});
+
+$('#addAttendanceModal').on('submit', '#attendance-form', function (e) {
+  e.preventDefault();
+  var form = $(this);
+  $.ajax({
+    url: form.attr('action'),
+    data: form.serialize(),
+    type: form.attr('method'),
+    dataType: 'json',
+    success: function (data) {
+      if (data.form_is_valid) {
+        $('#addAttendanceModal').modal('hide');
+        // Optionally update attendance table
+      } else {
+        $('#modal-attendance-content-container').html(data.html_form);
+      }
+    }
+  });
+});
+
+
+</script>
+
+<style>
+  .form-control {
+    border-radius: 0.375rem;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+  }
+
+  .modal-content {
+    border-radius: 1rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.05);
+  }
+</style>
+
+{% endblock %}

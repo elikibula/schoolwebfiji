@@ -62,6 +62,22 @@
       </div>      
       <!-- RIGHT: Sidebar -->
       <div class="col-lg-4">
+        <!-- Categories -->
+        <div class="mb-4">
+            <h5 class="mb-3 fw-bold text-uppercase text-primary">News Categories</h5>
+            <ul class="list-group category-list">
+                {% for category in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 border-bottom">
+                    <a href="{% url 'news:category_view' category.slug %}" class="text-decoration-none text-dark w-100 d-flex justify-content-between align-items-center category-link">
+                        <span>{{ category.name }}</span>
+                        <span class="badge bg-primary rounded-pill">{{ category.news_set.count }}</span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No categories yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
         <!-- Recent News -->
         <div class="mb-5">
             <h5 class="mb-3">Recent News</h5>
@@ -98,24 +114,7 @@
             {% endfor %}
         </div>
         
-        <!-- Categories -->
-        <div class="mb-4">
-            <h5 class="mb-3">Categories</h5>
-            <ul class="list-unstyled category-list">
-                {% for category in categories %}
-                <li>
-                    <a href="{% url 'news:category_view' category.slug %}" class="text-decoration-none d-flex justify-content-between align-items-center">
-                        {{ category.name }}
-                        <span class="badge bg-primary rounded-pill">{{ category.news_set.count }}</span>
-                    </a>
-                </li>
-                {% empty %}
-                <li class="text-muted">No categories yet.</li>
-                {% endfor %}
-            </ul>
-        </div>
       </div>
-
     </div>
   </div>
 </section>

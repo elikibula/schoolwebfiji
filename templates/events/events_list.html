@@ -1,0 +1,14 @@
+<!--Events -->
+<div class="event-ticker">
+    <div class="container"> 
+        <div class="row gy-4">
+            {% for event in events %}
+            <div class="col-md-6 col-xl-4 col-12 ticker-item">
+                <span class="date">{{ event.date|date:"b d" }}</span>
+                <span class="title">{{ event.title }}</span>
+            </div>
+            {% endfor %}
+        </div> 
+    </div>
+</div>
+<!--End of Events -->

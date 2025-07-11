@@ -1,0 +1,7 @@
+from django import forms
+from student_performance.models import Student
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['first_name', 'last_name', 'student_id', 'date_of_birth', 'admission_date', 'address', 'phone_contact']

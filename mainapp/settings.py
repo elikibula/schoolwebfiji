@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'widget_tweaks',
     'tinymce',
+    'events',
+    'student_performance',
+    'dashboard',
+
 
 ]
 
@@ -46,7 +50,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/home/'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -157,4 +161,14 @@ MEDIA_URL = '/media/'  # URL to access media
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'menubar': False,
+    'plugins': 'paste link image lists',
+    'toolbar': 'bold italic underline | bullist numlist | link image',
+    'paste_as_text': True,
+    'valid_elements': 'p,h1,h2,h3,strong,em,ul,ol,li,br,span,a[href|target],img[src|alt|width|height]',
+    'extended_valid_elements': 'span[class|style],a[href|target],img[src|alt|width|height]',
+}
 

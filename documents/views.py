@@ -172,3 +172,20 @@ def get_subcategories(request):
     return JsonResponse({'subcategories': list(subcategories)})
 
 
+def download_view(request):
+    downloads_category = get_object_or_404(DocumentCategory, name='Downloads')
+    subcategories = downloads_category.subcategories.all()
+
+    return render(request, 'documents/downloads.html', {
+        'downloads_category': downloads_category,
+        'subcategories': subcategories,
+    })
+
+def download_subcategory_detail(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    documents = Document.objects.filter(subcategory=subcategory)
+
+    return render(request, 'documents/download_subcategory_detail.html', {
+        'subcategory': subcategory,
+        'documents': documents,
+    })

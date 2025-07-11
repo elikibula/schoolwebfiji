@@ -1,0 +1,14 @@
+<form id="assessment-form" method="post" action="{% url 'add_assessment' %}" novalidate>
+  {% csrf_token %}
+  {% load crispy_forms_tags %}
+  {{ assessment_form|crispy }}
+
+  <div class="modal-footer border-0 pt-3 d-flex justify-content-between align-items-center">
+    <button type="submit" class="btn btn-warning px-4 py-2 shadow-sm text-white">
+      <i class="bi bi-check-circle me-2"></i> Save Assessment
+    </button>
+    <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
+      <i class="bi bi-x-circle me-2"></i> Cancel
+    </button>
+  </div>
+</form>
